@@ -66,11 +66,6 @@ void StartTask03(void const * argument);
 
 static QueueHandle_t queue;
 
-void send_task(void)
-{
-
-}
-
 
 /* USER CODE END 0 */
 
@@ -81,7 +76,7 @@ void send_task(void)
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-	queue = xQueueCreate(5,sizeof(int));
+	queue = xQueueCreate(20,sizeof(uint8_t));
 
 
 
@@ -304,18 +299,19 @@ void StartDefaultTask(void const * argument)
 void StartTask02(void const * argument)
 {
   /* USER CODE BEGIN StartTask02 */
+	uint8_t num;
 
   /* Infinite loop */
   for(;;)
   {
 
 	  //Checks for data in queue and prints it to the console.
-	  if(xQueueReceive(queue, (void*)&c, 0) == pdTRUE){
-		  uint8_t data[] = {c};
+	  if(xQueueReceive(queue, (void*)&num, 0) == pdTRUE){
+		  uint8_t data[] = {num};
 		  HAL_UART_Transmit(&huart2, data, sizeof(data), 500);
 	  }
-	  ;uint8_t data[] = "TaskIdle\n\r";
-	  ;HAL_UART_Transmit(&huart2, data, sizeof(data), 500);
+	  //uint8_t data[] = "TaskIdle\n\r";
+	  //HAL_UART_Transmit(&huart2, data, sizeof(data), 500);
 	  osDelay(1000);
   }
   /* USER CODE END StartTask02 */
@@ -332,15 +328,15 @@ void StartTask03(void const * argument)
 {
   /* USER CODE BEGIN StartTask03 */
   /* Infinite loop */
+  static int num = 1;
 
   for(;;)
   {
-	  static char c = 'A';
-	  xQueueSend(queue, (void*)c, 1);
 
+	  xQueueSend(queue, (void*)num, 1);
 	  uint8_t data[] = "Task3\n\r";
 	  HAL_UART_Transmit(&huart2, data, sizeof(data), 500);
-	  osDelay(5000);
+	  osDelay(3000);
   }
   /* USER CODE END StartTask03 */
 }
